@@ -121,7 +121,8 @@ public class C2SDeliveryErrorProcessor {
 				// how to get time of error? or maybe original time of message? timestamp might be slow while 
 				// in other case we might get issues with servers in other timezones!
 				long time = Long.parseLong(delay);
-				
+
+				boolean processed = false;
 				for (XMPPResourceConnection conn : sessionsForMessageDelivery) {
 					if (conn.getCreationTime() <= time)
 						continue;
@@ -130,8 +131,9 @@ public class C2SDeliveryErrorProcessor {
 					result.setPacketFrom(packet.getPacketTo());
 					result.setPacketTo(conn.getConnectionId());
 					results.offer(result);
+					processed = true;
 				}
-				return true;
+				return processed;
 			}
 			
 			return false;
